@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-    before_action :set_product, only: [:update, :destroy, :show]
+    before_action :set_product, only: [ :update, :destroy, :show ]
 
     def create
         @product = Product.new(product_params)
@@ -12,19 +12,19 @@ class ProductsController < ApplicationController
 
     def index
         @products = Product.order(:id)
-        render json: @products, methods: [:image_url]
+        render json: @products, methods: [ :image_url ]
     end
 
-    def show 
+    def show
         render json: @product, status: :ok
     end
 
-    def update 
+    def update
         if @product.update(product_params)
             render json: @product, status: :ok
-        else 
+        else
             render json: @product.errors, status: :unprocessable_entity
-        end    
+        end
     end
 
     def destroy
@@ -32,7 +32,7 @@ class ProductsController < ApplicationController
         head :no_content
     end
 
-    private 
+    private
 
     def set_product
         @product = Product.find(params[:id])

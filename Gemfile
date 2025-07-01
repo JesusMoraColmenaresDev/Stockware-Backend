@@ -50,13 +50,12 @@ group :development, :test do
     gem "ruby-lsp-rails", require: false # ¡Para Rails!
   end
 
-  gem 'httparty'
-  gem 'down'
-  gem 'dotenv-rails'
-  gem 'image_processing'
-  gem 'devise'
-  gem 'devise-jwt'
-
+  gem "httparty"
+  gem "down"
+  gem "dotenv-rails"
+  gem "image_processing"
+  gem "devise"
+  gem "devise-jwt"
 end
 
 gem "rack-cors", "~> 3.0"
