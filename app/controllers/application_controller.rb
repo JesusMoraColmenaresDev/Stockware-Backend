@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::API
-  before_action :set_cors_headers
+  before_action :log_cors_origin
 
-  def set_cors_headers
-    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
-    response.headers['Access-Control-Allow-Credentials'] = 'true'
+  def log_cors_origin
+    Rails.logger.info "[CORS] Origin header = #{request.headers['Origin'].inspect}"
+    Rails.logger.info "[CORS] Full request URL = #{request.url}"
   end
 end
