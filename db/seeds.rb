@@ -13,6 +13,7 @@ require "open-uri"
 
 Product.destroy_all
 Category.destroy_all
+User.destroy_all
 
 puts "Fetching data from API..."
 
@@ -83,7 +84,18 @@ productos_api.each do |data|
   end
 end
 
+puts "Creando usuarios . . ."
+users = [
+  { email: 'Jesus@gmail.com', password: '1234_5678' },
+  { email: 'Pob@gmail.com',   password: '1234_5678' },
+  { email: 'user@gmail.com',  password: '1234_5678' }
+]
 
+users.each do |attrs|
+  User.create!(attrs).tap do |u|
+    puts "Created user ##{u.id} (#{u.email})"
+  end
+end
 
 # ActiveRecord::Base.connection.tables.each do |table|
 #   ActiveRecord::Base.connection.reset_pk_sequence!(table)
