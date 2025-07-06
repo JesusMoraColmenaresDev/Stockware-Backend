@@ -23,7 +23,6 @@
 		"**/locales": true,
 		"**/concerns": true,
 		"**/jobs": true,
-		"**/migrate": true,
 		"**/.github": true,
 		"**/Rakefile": true,
 		"**/README.md": true,

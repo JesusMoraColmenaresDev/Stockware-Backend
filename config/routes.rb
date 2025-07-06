@@ -15,6 +15,10 @@ Rails.application.routes.draw do
 
   resources :products, only: [ :index, :create, :update, :destroy, :show ]
   resources :categories, only: [ :index, :show, :create, :update, :destroy ]
+  resources :stock_movements, only: [ :index, :show, :create ] do
+    get "by_user/:user_id", to: "stock_movements#by_user", on: :collection # Nos deberia dar una forma de obtener todas las de 1 usuario, pa la pantalla de admin quizas
+    get "by_product/:product_id", to: "stock_movements#by_product"
+  end
 
   devise_for :users, controllers: {
     sessions: "users/sessions",
