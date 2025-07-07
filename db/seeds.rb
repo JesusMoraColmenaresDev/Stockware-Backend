@@ -1,3 +1,8 @@
+# run rails db:seed:replant
+
+
+
+
 # This file should ensure the existence of records required to run the application in every environment (production,
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
@@ -11,9 +16,26 @@ require "net/http"
 require "json"
 require "open-uri"
 
-Product.destroy_all
-Category.destroy_all
-User.destroy_all
+# Product.destroy_all
+# Category.destroy_all
+# User.destroy_all
+# StockMovement.destroy_all
+
+# # reset every table’s PK sequence (Postgres/SQLite only):
+# [ Product, Category, User, StockMovement ].each do |model|
+#   ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
+# end
+
+
+ActiveRecord::Base.connection.execute <<-SQL.squish
+  TRUNCATE TABLE
+    stock_movements,
+    products,
+    categories,
+    users
+  RESTART IDENTITY
+  CASCADE;
+SQL
 
 puts "Fetching data from API..."
 
@@ -86,9 +108,9 @@ end
 
 puts "Creando usuarios . . ."
 users = [
-  { email: 'Jesus@gmail.com', password: '1234_5678' },
-  { email: 'Pob@gmail.com',   password: '1234_5678' },
-  { email: 'user@gmail.com',  password: '1234_5678' }
+  { email: 'Jesus@gmail.com', password: '1234_5678', name: "Jesus" },
+  { email: 'Pob@gmail.com',   password: '1234_5678', name: "Pob" },
+  { email: 'user@gmail.com',  password: '1234_5678', name: "User" }
 ]
 
 users.each do |attrs|
