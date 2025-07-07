@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :log_cors_origin
+    before_action :configure_permitted_parameters, if: :devise_controller?
 
   def log_cors_origin
     Rails.logger.info "[CORS] Origin header = #{request.headers['Origin'].inspect}"
@@ -19,6 +20,11 @@ class ApplicationController < ActionController::API
   end
 
   protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+  end
 
   def respond_to_unauthenticated
     render json: { error: "Unauthorized" }, status: :unauthorized
