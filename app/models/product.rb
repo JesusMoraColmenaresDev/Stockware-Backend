@@ -1,6 +1,6 @@
 class Product < ApplicationRecord
     # Esto de optional es para que de una vez verifique si si hay una categoria asociada al category id que le pasemos
-    belongs_to :category, optional: false
+    belongs_to :category, optional: false, counter_cache: true
     validates :name, presence: true
     validates :price, presence: true
     validates :category_id, presence: true
