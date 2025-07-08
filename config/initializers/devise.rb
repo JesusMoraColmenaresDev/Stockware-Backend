@@ -1,3 +1,4 @@
+
 # frozen_string_literal: true
 
 # Assuming you have not yet modified this file, each configuration option below
@@ -332,3 +333,4 @@ Devise.setup do |config|
     jwt.expiration_time = 1.day.to_i
   end
 end
+
