@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
     before_action :set_product, only: [ :update, :destroy, :show ]
 
+
     def create
         @product = Product.new(product_params)
         if @product.save
