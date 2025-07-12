@@ -24,4 +24,6 @@ Rails.application.routes.draw do
     sessions: "users/sessions",
     registrations: "users/registrations"
   }
+
+  resources :users, only: [ :index, :show, :update ] # GetAll, Get, Update/Patch
 end
