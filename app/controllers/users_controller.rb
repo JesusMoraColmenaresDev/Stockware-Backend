@@ -7,19 +7,19 @@ class UsersController < ApplicationController
   # GET /users (Get ALL)
   def index
     # Solo para Admin?
-    render json: User.all.select(:id, :email, :name, :created_at), status: :ok # Retornamos todos, pero solo los datos publivos de C/U
+    render json: User.all.select(:id, :email, :name, :created_at, :role, :is_enabled), status: :ok # Retornamos todos, pero solo los datos publivos de C/U
   end
 
   # GET /users/:id (Get By id)
   def show
-    render json: @user.slice(:id, :email, :name, :created_at), status: :ok  # Del usuario especifico, nos taremos solo lo publico
+    render json: @user.slice(:id, :email, :name, :created_at, :role, :is_enabled), status: :ok  # Del usuario especifico, nos taremos solo lo publico
   end
 
   # PATCH /users/:id
   # body: { user: { name: "New Name", email: "new@example.com" } }
   def update
     if @user.update(user_params)  # Encuentra el usuario con los parametros respectivos?
-      render json: @user.slice(:id, :email, :name), status: :ok
+      render json: @user.slice(:id, :email, :name, :is_enabled), status: :ok
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -44,6 +44,6 @@ class UsersController < ApplicationController
 
   def user_params
     # Only allow name & email (and password if you want)
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :is_enabled)
   end
 end
