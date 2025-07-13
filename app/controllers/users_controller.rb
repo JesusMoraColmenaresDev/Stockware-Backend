@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   # body: { user: { name: "New Name", email: "new@example.com" } }
   def update
     if @user.update(user_params)  # Encuentra el usuario con los parametros respectivos?
-      render json: @user.slice(:id, :email, :name, :is_enabled), status: :ok
+      render json: @user.slice(:id, :email, :name, :is_enabled, :role), status: :ok
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -44,6 +44,6 @@ class UsersController < ApplicationController
 
   def user_params
     # Only allow name & email (and password if you want)
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :is_enabled)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :is_enabled, :role)
   end
 end
