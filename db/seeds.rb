@@ -108,9 +108,9 @@ end
 
 puts "Creando usuarios . . ."
 users = [
-  { email: 'Jesus@gmail.com', password: '1234_5678', name: "Jesus" },
+  { email: 'Jesus@gmail.com', password: '1234_5678', name: "Jesus" , role: "admin"},
   { email: 'Pob@gmail.com',   password: '1234_5678', name: "Pob" },
-  { email: 'user@gmail.com',  password: '1234_5678', name: "User" }
+  { email: 'user@gmail.com',  password: '1234_5678', name: "User", role: "admin" }
 ]
 
 users.each do |attrs|
