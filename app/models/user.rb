@@ -5,10 +5,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
 
-         
-  #enum role: { user: 'user', admin: 'admin' }
+
+  # enum role: { user: 'user', admin: 'admin' }
   validates :name, presence: true
-  #validates :is_enabled, inclusion: { in: [true, false] }
+    # validates :is_enabled, inclusion: { in: [true, false] }
 
     def active_for_authentication?
       # `super` llama a la lógica original de Devise.
