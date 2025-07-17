@@ -108,9 +108,9 @@ end
 
 puts "Creando usuarios . . ."
 users = [
-  { email: 'Jesus@gmail.com', password: '1234_5678', name: "Jesus" , role: "admin"},
-  { email: 'Pob@gmail.com',   password: '1234_5678', name: "Pob" },
-  { email: 'user@gmail.com',  password: '1234_5678', name: "User", role: "admin" }
+  { email: 'Jesus@gmail.com', password: '1234_5678', name: "Jesus", role: "admin", is_enabled: true },
+  { email: 'Pob@gmail.com',   password: '1234_5678', name: "Pob", is_enabled: true  },
+  { email: 'user@gmail.com',  password: '1234_5678', name: "User", role: "admin", is_enabled: false }
 ]
 
 users.each do |attrs|
@@ -118,6 +118,31 @@ users.each do |attrs|
     puts "Created user ##{u.id} (#{u.email})"
   end
 end
+
+
+StockMovement.destroy_all
+ActiveRecord::Base.connection.reset_pk_sequence!('stock_movements')
+
+puts "Seeding stock movements…"
+products = Product.all.to_a
+users    = User.all.to_a
+
+5.times do
+  product  = products.sample
+  user     = users.sample
+  # pick a random quantity between -10 and +10, excluding 0
+  movement = ([ *1..10 ] + [ *-10..-1 ]).sample
+
+  StockMovement.create!(
+    product:  product,
+    user:     user,
+    movement: movement
+  )
+
+  puts "  • #{movement > 0 ? 'Added' : 'Removed'} #{movement.abs} units "\
+    "on product ##{product.id} by user ##{user.id}"
+end
+
 
 # ActiveRecord::Base.connection.tables.each do |table|
 #   ActiveRecord::Base.connection.reset_pk_sequence!(table)

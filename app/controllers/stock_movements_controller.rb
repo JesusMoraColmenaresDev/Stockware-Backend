@@ -1,7 +1,7 @@
 class StockMovementsController < ApplicationController
   # before_action :authenticate_user!      # if you’re using Devise
   #  before_action :set_product, only: [ :create, :by_product ]
-  before_action :authenticate_user!, only: [ :create ]
+  # before_action :authenticate_user!, only: [ :create ]
 
 
   # GET /stock_movements
@@ -50,10 +50,10 @@ class StockMovementsController < ApplicationController
     product = Product.find(movement.product_id)
 
     ActiveRecord::Base.transaction do # Pa Modificar en Ambos lados
-      new_stock = product.stock + movement.quantity
+      new_stock = product.stock + movement.movement
 
       if new_stock < 0
-        movement.errors.add(:quantity, "Convertiria el Stock a menor que 0, Imposible")
+        movement.errors.add(:movement, "Convertiria el Stock a menor que 0, Imposible")
         raise ActiveRecord::RecordInvalid.new(movement)
       end
 
@@ -77,6 +77,6 @@ class StockMovementsController < ApplicationController
   def movement_params
     params
       .require(:stock_movement)
-      .permit(:product_id, :quantity)
+      .permit(:product_id, :movement)
   end
 end
