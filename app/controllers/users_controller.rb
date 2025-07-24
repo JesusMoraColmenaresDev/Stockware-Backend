@@ -7,7 +7,9 @@ class UsersController < ApplicationController
   # GET /users (Get ALL)
   def index
     # Solo para Admin?
-    render json: User.all.select(:id, :email, :name, :created_at, :role, :is_enabled), status: :ok # Retornamos todos, pero solo los datos publivos de C/U
+    query = User.all.select(:id, :email, :name, :created_at, :role, :is_enabled)
+    render_paginated(query)
+
   end
 
   # GET /users/:id (Get By id)
@@ -24,10 +26,6 @@ class UsersController < ApplicationController
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
   end
-
-
-
-
 
   private
 

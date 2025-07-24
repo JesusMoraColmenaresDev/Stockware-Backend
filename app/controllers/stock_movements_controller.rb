@@ -6,8 +6,7 @@ class StockMovementsController < ApplicationController
 
   # GET /stock_movements
   def index
-    movements = StockMovement.all.order(created_at: :desc)
-    render json: movements, status: :ok
+    render_paginated(StockMovement.all.order(created_at: :desc))
   end
 
   # GET /stock_movements/:id

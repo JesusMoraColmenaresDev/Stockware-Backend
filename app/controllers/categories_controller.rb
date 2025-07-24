@@ -2,8 +2,21 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: [ :update, :destroy, :show ]
 
   def index
-    @categories = Category.all
-    render json: @categories
+    # 1. Empezamos con la consulta base de todas las categorias.
+    categories = Category.order(:name)
+
+    # 2. Si el parámetro 'search' está presente en la URL, filtramos.
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      categories = categories.where("name ILIKE ?", search_term)
+    end
+    render_paginated(categories)
+  end
+
+  # GET /categories/all
+  def all
+    categories = Category.order(:name)
+    render json: categories, status: :ok
   end
 
   def show

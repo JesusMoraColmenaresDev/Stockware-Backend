@@ -53,9 +53,11 @@ group :development, :test do
   gem "httparty"
   gem "down"
   gem "dotenv-rails"
-  gem "image_processing"
-  gem "devise"
-  gem "devise-jwt"
+
 end
 
+gem "image_processing"
+gem "devise"
+gem "devise-jwt"
+gem "pagy"
 gem "rack-cors", "~> 3.0"

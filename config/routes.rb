@@ -14,7 +14,9 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :products, only: [ :index, :create, :update, :destroy, :show ]
-  resources :categories, only: [ :index, :show, :create, :update, :destroy ]
+  resources :categories, only: [ :index, :show, :create, :update, :destroy ] do
+    get "all", on: :collection
+  end
   resources :stock_movements, only: [ :index, :show, :create ] do
     get "by_user/:user_id", to: "stock_movements#by_user", on: :collection # Nos deberia dar una forma de obtener todas las de 1 usuario, pa la pantalla de admin quizas
     get "by_product/:product_id", to: "stock_movements#by_product"

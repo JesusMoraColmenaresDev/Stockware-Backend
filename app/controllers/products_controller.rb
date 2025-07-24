@@ -12,8 +12,24 @@ class ProductsController < ApplicationController
     end
 
     def index
-        @products = Product.order(:id)
-        render json: @products, methods: [ :image_url ]
+        # 1. Empezamos con la consulta base de todos los productos.
+        products = Product.order(:id)
+        
+        # 2. Si el parámetro 'search' está presente en la URL...
+        if params[:search].present?
+            # ...filtramos la consulta.
+            # Usamos ILIKE para una búsqueda que no distingue mayúsculas/minúsculas (funciona en PostgreSQL).
+            search_term = "%#{params[:search]}%"
+            products = products.where("name ILIKE ? OR description ILIKE ?", search_term, search_term)
+        end
+
+        if params[:category_id].present?
+            products = products.where(category_id: params[:category_id])
+        end
+
+        #esta definido en aplication controller
+        # 3. Pasamos la consulta (ya sea la original o la filtrada) a nuestro método de paginación.
+        render_paginated(products, { methods: :image_url })
     end
 
     def show
