@@ -6,10 +6,24 @@ class UsersController < ApplicationController
 
   # GET /users (Get ALL)
   def index
-    # Solo para Admin?
-    query = User.all.select(:id, :email, :name, :created_at, :role, :is_enabled)
-    render_paginated(query)
+    # 1. Empezamos con la consulta base de todos los usuarios, seleccionando los campos necesarios.
+    users = User.select(:id, :email, :name, :created_at, :role, :is_enabled).order(:name)
 
+    # 2. Si el parámetro 'search' está presente, filtramos por nombre o email.
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      users = users.where("name ILIKE ?", search_term)
+    end
+
+    # 3. Pasamos la consulta (original o filtrada) a nuestro método de paginación.
+    render_paginated(users)
+  end
+
+  # GET /users/all
+  def all
+    # Solo para Admin?
+    users = User.all.select(:id, :email, :name, :role, :is_enabled)
+    render json: users, status: :ok
   end
 
   # GET /users/:id (Get By id)

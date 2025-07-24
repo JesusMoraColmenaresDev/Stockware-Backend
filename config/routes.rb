@@ -27,5 +27,7 @@ Rails.application.routes.draw do
     registrations: "users/registrations"
   }
 
-  resources :users, only: [ :index, :show, :update ] # GetAll, Get, Update/Patch
+  resources :users, only: [ :index, :show, :update ] do # GetAll, Get, Update/Patch
+    get "all", on: :collection
+  end
 end
