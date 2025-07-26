@@ -13,7 +13,7 @@ class ProductsController < ApplicationController
 
     def index
         # 1. Empezamos con la consulta base de todos los productos.
-        products = Product.order(:id)
+        products = Product.includes(:category).order(:id)
         
         # 2. Si el parámetro 'search' está presente en la URL...
         if params[:search].present?
@@ -29,7 +29,20 @@ class ProductsController < ApplicationController
 
         #esta definido en aplication controller
         # 3. Pasamos la consulta (ya sea la original o la filtrada) a nuestro método de paginación.
-        render_paginated(products, { methods: :image_url })
+        respond_to do |format|
+            format.json do
+                # 3. Para JSON, pasamos la consulta (ya sea la original o la filtrada) a nuestro método de paginación.
+                render_paginated(products, { methods: :image_url })
+            end
+
+            format.pdf do
+                # Para PDF, creamos una instancia de nuestro generador y enviamos los datos.
+                pdf = ProductReportPdf.new(products)
+                send_data pdf.render,
+                          type: "application/pdf",
+                          disposition: "inline"
+            end
+        end
     end
 
     def show

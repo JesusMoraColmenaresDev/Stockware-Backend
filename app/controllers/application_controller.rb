@@ -1,4 +1,5 @@
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :null_session
   include Pagy::Backend
   before_action :log_cors_origin
   before_action :configure_permitted_parameters, if: :devise_controller?

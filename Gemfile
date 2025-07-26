@@ -60,4 +60,6 @@ gem "image_processing"
 gem "devise"
 gem "devise-jwt"
 gem "pagy"
+gem 'prawn'
+gem 'prawn-table'
 gem "rack-cors", "~> 3.0"

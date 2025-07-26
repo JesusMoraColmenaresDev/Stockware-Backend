@@ -44,17 +44,27 @@ class StockMovementsController < ApplicationController
       end
     end
 
-    # 4. Pasamos la consulta (ya sea la original o la filtrada) a nuestro método de paginación.
-    # También incluimos los datos del producto (con su URL de imagen) y del usuario en la respuesta JSON.
-    render_paginated(movements, {
-      include: {
-        product: {
-          methods: :image_url,
-          include: { category: { only: [:id, :name] } }
-        },
-        user: { only: [:id, :name, :email, :is_enabled] }
-      }
-    })
+    respond_to do |format|
+      format.json do
+        # 4. Para JSON, pasamos la consulta a nuestro método de paginación.
+        render_paginated(movements, {
+          include: {
+            product: {
+              methods: :image_url,
+              include: { category: { only: [:id, :name] } }
+            },
+            user: { only: [:id, :name, :email, :is_enabled] }
+          }
+        })
+      end
+
+      format.pdf do
+        pdf = StockReportPdf.new(movements)
+        send_data pdf.render,
+                  type: "application/pdf",
+                  disposition: "inline" # 'inline' lo muestra en el navegador, 'attachment' lo descarga
+      end
+    end
   end
 
   # GET /stock_movements/:id
