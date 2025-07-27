@@ -51,10 +51,10 @@ class StockMovementsController < ApplicationController
           include: {
             product: {
               methods: :image_url,
-              include: { category: { only: [:id, :name] } }
+              include: { category: { only: [ :id, :name ] } }
             },
-            user: { only: [:id, :name, :email, :is_enabled] }
-          }
+            user: { only: [ :id, :name, :email, :is_enabled ] }
+          }, methods: :price
         })
       end
 
@@ -105,6 +105,7 @@ class StockMovementsController < ApplicationController
     movement.user = current_user
 
     product = Product.find(movement.product_id)
+    movement.price = product.price
 
     ActiveRecord::Base.transaction do # Pa Modificar en Ambos lados
       new_stock = product.stock + movement.movement
