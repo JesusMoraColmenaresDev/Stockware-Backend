@@ -14,7 +14,7 @@ class ProductsController < ApplicationController
     def index
         # 1. Empezamos con la consulta base de todos los productos.
         products = Product.includes(:category).order(:id)
-        
+
         # 2. Si el parámetro 'search' está presente en la URL...
         if params[:search].present?
             # ...filtramos la consulta.
@@ -27,7 +27,7 @@ class ProductsController < ApplicationController
             products = products.where(category_id: params[:category_id])
         end
 
-        #esta definido en aplication controller
+        # esta definido en aplication controller
         # 3. Pasamos la consulta (ya sea la original o la filtrada) a nuestro método de paginación.
         respond_to do |format|
             format.json do
@@ -58,8 +58,14 @@ class ProductsController < ApplicationController
     end
 
     def destroy
-        @product.destroy
-        head :no_content
+        # @product.destroy
+        # head :no_content
+        # soft‑disable
+        if @product.update(is_enabled: false)
+            head :no_content
+        else
+            render json: @product.errors, status: :unprocessable_entity
+        end
     end
 
     private

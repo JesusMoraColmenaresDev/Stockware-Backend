@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_17_040027) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_27_044024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_040027) do
     t.integer "category_id"
     t.integer "stock", default: 0, null: false
     t.integer "minimumQuantity", default: 1, null: false
+    t.boolean "is_enabled", default: true, null: false
+    t.index ["is_enabled"], name: "index_products_on_is_enabled"
   end
 
   create_table "stock_movements", force: :cascade do |t|
@@ -73,6 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_040027) do
     t.integer "movement"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "price", precision: 10, scale: 2, default: "0.0", null: false
     t.index ["product_id"], name: "index_stock_movements_on_product_id"
     t.index ["user_id"], name: "index_stock_movements_on_user_id"
   end
