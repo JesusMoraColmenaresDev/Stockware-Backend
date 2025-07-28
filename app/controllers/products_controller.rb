@@ -13,7 +13,7 @@ class ProductsController < ApplicationController
 
     def index
         # 1. Empezamos con la consulta base de todos los productos.
-        products = Product.includes(:category).order(:id)
+        products = Product.where(is_enabled: true).includes(:category).order(:id)
 
         # 2. Si el parámetro 'search' está presente en la URL...
         if params[:search].present?
