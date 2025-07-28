@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
     def create
         @product = Product.new(product_params)
         if @product.save
-            render json: @product, status: :created
+            render json: @product, include: :category, status: :created
         else
             render json: @product.errors, status: :unprocessable_entity
         end
@@ -46,7 +46,7 @@ class ProductsController < ApplicationController
     end
 
     def show
-        render json: @product, status: :ok
+        render json: @product, methods: :image_url, include: :category, status: :ok
     end
 
     def update
@@ -71,7 +71,7 @@ class ProductsController < ApplicationController
     private
 
     def set_product
-        @product = Product.find(params[:id])
+        @product = Product.includes(:category).find(params[:id])
     rescue ActiveRecord::RecordNotFound
         render json: { error: "Producto no encontrado" }, status: :not_found
     end
