@@ -1,15 +1,14 @@
-class ApplicationController < ActionController::Base
-  protect_from_forgery with: :null_session
+# Para una aplicación API (`config.api_only = true`), heredar de ActionController::API
+# es la práctica estándar. Carga un conjunto de módulos más ligero y adecuado.
+class ApplicationController < ActionController::API
   include Pagy::Backend
+  # Incluimos este módulo para poder usar `respond_to` en los controladores
+  # y manejar múltiples formatos de respuesta (ej. JSON, PDF).
+  include ActionController::MimeResponds
+
   before_action :log_cors_origin
   before_action :configure_permitted_parameters, if: :devise_controller?
-
-  def log_cors_origin
-    Rails.logger.info "[CORS] Origin header = #{request.headers['Origin'].inspect}"
-    Rails.logger.info "[CORS] Full request URL = #{request.url}"
-  end
-
-  rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_token
+  before_action :authenticate_user!, unless: :devise_controller?
 
   def authenticate_user!
     unless user_signed_in?
@@ -17,8 +16,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def invalid_token
-    render json: { error: "Invalid or missing token" }, status: :unauthorized
+  def log_cors_origin
+    Rails.logger.info "[CORS] Origin header = #{request.headers['Origin'].inspect}"
+    Rails.logger.info "[CORS] Full request URL = #{request.url}"
   end
 
   protected
@@ -40,7 +40,6 @@ class ApplicationController < ActionController::Base
     }, status: :ok
   end
 
-  def respond_to_unauthenticated
-    render json: { error: "Unauthorized" }, status: :unauthorized
-  end
+  # El método `invalid_token` y `respond_to_unauthenticated` ya no son necesarios
+  # porque la autenticación se maneja explícitamente y no se usa protección CSRF.
 end

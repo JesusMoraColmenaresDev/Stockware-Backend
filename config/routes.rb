@@ -22,10 +22,18 @@ Rails.application.routes.draw do
     get "by_product/:product_id", to: "stock_movements#by_product", on: :collection
   end
 
-  devise_for :users, controllers: {
-    sessions: "users/sessions",
-    registrations: "users/registrations"
-  }
+  # Ruta para que el usuario autenticado obtenga su propia información de perfil
+  get "/profile", to: "users#profile", defaults: { format: :json }
+  patch "/profile", to: "users#update_profile", defaults: { format: :json }
+  patch "/password", to: "users#update_password", defaults: { format: :json }
+  delete "/profile", to: "users#destroy_profile", defaults: { format: :json }
+
+  devise_for :users, 
+    defaults: { format: :json },
+    controllers: {
+      sessions: "users/sessions",
+      registrations: "users/registrations"
+    }
 
   resources :users, only: [ :index, :show, :update ], defaults: { format: :json } do # GetAll, Get, Update/Patch
     get "all", on: :collection

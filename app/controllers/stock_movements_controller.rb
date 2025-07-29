@@ -1,9 +1,4 @@
 class StockMovementsController < ApplicationController
-  # before_action :authenticate_user!      # if you’re using Devise
-  #  before_action :set_product, only: [ :create, :by_product ]
-  # before_action :authenticate_user!, only: [ :create ]
-
-
   # GET /stock_movements
   def index
     # 1. Empezamos con la consulta base, incluyendo productos y usuarios para poder filtrar y mostrar sus datos.
