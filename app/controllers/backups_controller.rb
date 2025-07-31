@@ -15,7 +15,7 @@ class BackupsController < ApplicationController
     Rake::Task["stockware:backup"].reenable
     Rake::Task["stockware:backup"].invoke
 
-    render json: { message: "Backup kicked off" }, status: :accepted
+    render json: { message: "Backup Sucessful" }, status: :accepted
   rescue => e
     # If anything goes wrong (pg_dump, tar, etc), return 500 + error message
     render json: { error: e.message }, status: :internal_server_error

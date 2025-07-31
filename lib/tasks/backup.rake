@@ -15,10 +15,10 @@ namespace :stockware do
       abort "❌ pg_dump failed—see above for details."
     end
 
-    puts "⏳ Archiving ActiveStorage to #{latest_storage}..."
-    storage_path = Rails.root.join("storage")
-    unless system("tar czf #{latest_storage} #{storage_path}")
-      abort "❌ tar archive failed—see above for details."
+    puts "⏳ Archiving storage to #{latest_storage} (relative)…"
+    Dir.chdir(Rails.root) do
+      # this archives only the `storage/` folder, not the full absolute path
+      abort("tar failed") unless system("tar czf #{latest_storage} storage")
     end
 
     puts "🎉 Backup complete: #{latest_dump} and #{latest_storage}"

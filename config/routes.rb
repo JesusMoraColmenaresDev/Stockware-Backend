@@ -39,5 +39,5 @@ Rails.application.routes.draw do
     get "all", on: :collection
   end
 
-  post "backup", to: "backups#create"
+  post "backup", to: "backups#create", defaults: { format: :json }
 end
