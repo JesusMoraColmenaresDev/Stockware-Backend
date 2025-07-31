@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   patch "/password", to: "users#update_password", defaults: { format: :json }
   delete "/profile", to: "users#destroy_profile", defaults: { format: :json }
 
-  devise_for :users, 
+  devise_for :users,
     defaults: { format: :json },
     controllers: {
       sessions: "users/sessions",
@@ -38,4 +38,6 @@ Rails.application.routes.draw do
   resources :users, only: [ :index, :show, :update ], defaults: { format: :json } do # GetAll, Get, Update/Patch
     get "all", on: :collection
   end
+
+  post "backup", to: "backups#create", defaults: { format: :json }
 end
