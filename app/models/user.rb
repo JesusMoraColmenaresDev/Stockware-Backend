@@ -6,7 +6,7 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
 
 
-  # enum role: { user: 'user', admin: 'admin' }
+  # enum role: { user: "user", admin: "admin" }, _default: "user"
   validates :name, presence: true
     # validates :is_enabled, inclusion: { in: [true, false] }
 
@@ -18,5 +18,9 @@ class User < ApplicationRecord
 
     def inactive_message
       is_enabled? ? super : "Tu cuenta ha sido deshabilitada. Por favor, contacta a un administrador."
+    end
+
+    def admin?
+      role == "admin"
     end
 end

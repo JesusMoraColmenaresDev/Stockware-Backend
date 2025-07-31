@@ -81,7 +81,7 @@ class UsersController < ApplicationController
       sign_out current_user # Invalidamos la sesión/token de Devise.
       head :no_content
     else
-      render json: { errors: ["Incorrect password. Account not deleted."] }, status: :unauthorized
+      render json: { errors: [ "Incorrect password. Account not deleted." ] }, status: :unauthorized
     end
   end
 
@@ -103,6 +103,12 @@ class UsersController < ApplicationController
 
   def authorize_user!
     head :forbidden unless current_user.id == @user.id
+  end
+
+  def authorize!
+    # only admins can list or update arbitrary users;
+    # allow users to see/update themselves if you prefer
+    head :forbidden unless current_user.role == "admin"
   end
 
   def user_params

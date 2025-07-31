@@ -1,21 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Navigate to your Rails project root (adjust if this script lives elsewhere)
-cd "$(dirname "$0")/../.."  
+# ─── 1) Move into your Rails app root ───────────────────────────────────────
+cd "$(dirname "$0")/../.."
 
-echo "🔄 Dropping and recreating database..."
-# Use dotenv to load your DB credentials, then drop & recreate
-dotenv rails db:drop db:create
+# ─── 2) Load .env into environment ────────────────────────────────────────
+# This exports every VAR=VALUE line in .env so $PGDATABASE, $PGUSER, etc. exist
+set -a
+[ -f .env ] && . .env
+set +a
 
-echo "🔄 Restoring database from latest dump..."
-dotenv pg_restore \
+# ─── 3) Drop & recreate the database ──────────────────────────────────────
+echo "🔄 Dropping database ${PGDATABASE}..."
+rails db:drop db:create
+
+# ─── 4) Restore from latest dump ──────────────────────────────────────────
+echo "🔄 Restoring database from backups/stockware_latest.dump..."
+pg_restore \
   --no-owner \
   --clean \
-  --dbname="${PGDATABASE}" \
+  --dbname="$PGDATABASE" \
   backups/stockware_latest.dump
 
-echo "🔄 Restoring ActiveStorage from latest archive..."
+# ─── 5) Unpack ActiveStorage ─────────────────────────────────────────────
+echo "🔄 Restoring ActiveStorage from backups/storage_latest.tgz..."
 tar xzf backups/storage_latest.tgz -C .
 
 echo "✅ Restore complete."
