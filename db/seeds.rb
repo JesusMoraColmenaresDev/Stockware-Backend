@@ -1,6 +1,5 @@
-# db/seeds.rb
 # run with: bin/rails db:seed:replant
-
+require "fileutils"
 require "net/http"
 require "json"
 require "open-uri"
@@ -15,6 +14,15 @@ ActiveRecord::Base.connection.execute <<-SQL.squish
   RESTART IDENTITY
   CASCADE;
 SQL
+
+puts "Clearing ActiveStorage storage directory..."
+storage_dir = Rails.root.join("storage")
+if Dir.exist?(storage_dir)
+  Dir.children(storage_dir).each do |entry|
+    path = storage_dir.join(entry)
+    FileUtils.rm_rf(path)
+  end
+end
 
 puts "Fetching data from API..."
 
