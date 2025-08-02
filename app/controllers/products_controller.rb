@@ -37,7 +37,7 @@ class ProductsController < ApplicationController
 
             format.pdf do
                 # Para PDF, creamos una instancia de nuestro generador y enviamos los datos.
-                pdf = ProductReportPdf.new(products)
+                pdf = ProductReportPdf.new(products, current_user)
                 send_data pdf.render,
                           type: "application/pdf",
                           disposition: "inline"

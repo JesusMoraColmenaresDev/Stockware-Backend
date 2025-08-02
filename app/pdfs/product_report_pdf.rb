@@ -1,19 +1,22 @@
-class ProductReportPdf < Prawn::Document
-  
-  def initialize(products)
-    super(page_size: "A4", top_margin: 50)
+require_relative 'base_report_pdf'
 
+class ProductReportPdf < BaseReportPdf
+  def initialize(products, user)
+    super(user) # Pasa el usuario a la clase padre (BaseReportPdf)
     @products = products
-    header
-    table_content
-    footer
   end
 
-  def header
-    text "Reporte de productos en el stock", size: 24, style: :bold, align: :center
-    move_down 30
+  # Sobrescribimos el método `render` para usar el `render_report` del padre
+  def render
+    # 1. Build the document content using the base class helper with an English title.
+    render_report(title: "Product Stock Report") { table_content }
+    # 2. Llama al `render` original de Prawn para generar el PDF y devolverlo.
+    super
   end
 
+  private
+
+  # La lógica para crear la tabla específica de este reporte
   def table_content
 
     col_widths = [
@@ -34,23 +37,17 @@ class ProductReportPdf < Prawn::Document
   end
 
   def table_data
-    # Encabezado de la tabla
-    [["ID", "Nombre", "Precio", "Categoría", "Stock"]] +
+    # Table header in English
+    [["ID", "Name", "Price", "Category", "Stock"]] +
       # Filas de datos
       @products.map do |product|
         [
           product.id,
           product.name,
-          format("%.2f", product.price),
+          format_currency(product.price), # Usamos el helper de
           product.category.name,
           product.stock
         ]
       end
   end
-
-  def footer
-    # Numera las páginas en la parte inferior
-    number_pages "Página <page> de <total>", at: [bounds.left, 10], align: :center, size: 10
-  end
-
 end  
