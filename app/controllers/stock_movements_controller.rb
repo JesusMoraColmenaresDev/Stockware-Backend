@@ -124,7 +124,7 @@ class StockMovementsController < ApplicationController
         raise ActiveRecord::RecordInvalid.new(movement)
       end
 
-      product.update!(stock: new_stock) # Actualiza en productos
+      product.update!(stock: new_stock) # Actualiza en productos desde la DB, NO llama a la request, solo actualiza en db
       movement.save! # Guarda la Transaccion
     end
 

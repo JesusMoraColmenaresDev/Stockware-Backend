@@ -17,15 +17,16 @@ class ApplicationController < ActionController::API
   end
 
   def log_cors_origin
-    Rails.logger.info "[CORS] Origin header = #{request.headers['Origin'].inspect}"
-    Rails.logger.info "[CORS] Full request URL = #{request.url}"
+    # Rails.logger.info "[CORS] Origin header = #{request.headers['Origin'].inspect}"
+    # Rails.logger.info "[CORS] Full request URL = #{request.url}"
+    Rails.logger.debug "[CORS] Origin=#{request.headers['Origin'].inspect}"
   end
 
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
   end
 
   def render_paginated(query, json_options = {})
