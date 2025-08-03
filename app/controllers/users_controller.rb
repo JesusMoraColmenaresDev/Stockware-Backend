@@ -85,6 +85,18 @@ class UsersController < ApplicationController
     end
   end
 
+  # PATCH /profile/disable
+  def disable_own_account
+    # Verificamos que la contraseña proporcionada sea correcta.
+    if current_user.valid_password?(disable_account_params[:current_password])
+      current_user.update(is_enabled: false)
+      sign_out current_user # Invalidamos la sesión/token de Devise.
+      render json: { message: "Account successfully disabled." }, status: :ok
+    else
+      render json: { errors: [ "Incorrect password. Account not disabled." ] }, status: :unauthorized
+    end
+  end
+
   # GET /profile
   def profile
     # El `before_action :authenticate_user!` en ApplicationController ya se encargó
@@ -128,6 +140,10 @@ class UsersController < ApplicationController
   end
 
   def delete_account_params
+    params.require(:user).permit(:current_password)
+  end
+
+  def disable_account_params
     params.require(:user).permit(:current_password)
   end
 end

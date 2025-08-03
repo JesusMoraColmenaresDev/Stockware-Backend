@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   patch "/profile", to: "users#update_profile", defaults: { format: :json }
   patch "/password", to: "users#update_password", defaults: { format: :json }
   delete "/profile", to: "users#destroy_profile", defaults: { format: :json }
+  patch "/profile/disable", to: "users#disable_own_account", defaults: { format: :json }
 
   devise_for :users,
     defaults: { format: :json },
