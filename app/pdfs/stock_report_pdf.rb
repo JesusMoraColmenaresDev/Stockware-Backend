@@ -1,24 +1,34 @@
-class StockReportPdf < Prawn::Document
-  def initialize(movements)
-    super(page_size: "A4", top_margin: 50)
+require_relative 'base_report_pdf'
 
+class StockReportPdf < BaseReportPdf
+  def initialize(movements, user, start_date: nil, end_date: nil)
+    super(user) # Pasa el usuario a la clase padre (BaseReportPdf)
     @movements = movements
-    header
-    table_content
-    footer
+    @start_date = start_date
+    @end_date = end_date
   end
 
-  def header
-    text "Reporte de movimientos del stock", size: 24, style: :bold, align: :center
-    move_down 30
+  # Sobrescribimos el método `render` para usar el `render_report` del padre
+  def render
+    # 1. Build the document content with an English title.
+    render_report(
+      title: "Stock Movement Report",
+      start_date: @start_date,
+      end_date: @end_date
+    ) { table_content }
+    # 2. Llama al `render` original de Prawn para generar el PDF.
+    super
   end
+
+  private
 
   def table_content
     col_widths = [
       bounds.width * 0.08, # ID
-      bounds.width * 0.15, # Fecha
-      bounds.width * 0.35, # Producto
-      bounds.width * 0.17, # Cantidad
+      bounds.width * 0.18, # Date
+      bounds.width * 0.22, # Product
+      bounds.width * 0.15, # User
+      bounds.width * 0.12, # Quantity
       bounds.width * 0.12, # Precio Hist.
       bounds.width * 0.13  # Valor Total
     ]
@@ -32,30 +42,19 @@ class StockReportPdf < Prawn::Document
   end
 
   def table_data
-    # Encabezado de la tabla
-    [ [ "ID", "Fecha", "Producto", "Cantidad", "Precio Hist.", "Valor" ] ] +
+    # Table header in English
+    [ [ "ID", "Date", "Product", "User", "Quantity", "Hist. Price", "Value" ] ] +
       # Filas de datos
       @movements.map do |movement|
         [
           movement.id,
           movement.created_at.strftime("%d/%m/%Y"),
           movement.product.name,
+          movement.user.name,
           movement.movement,
           format_currency(movement.price),
           format_currency(movement.movement * movement.price)
         ]
       end
-  end
-
-  def footer
-    # Numera las páginas en la parte inferior
-    number_pages "Página <page> de <total>", at: [ bounds.left, 10 ], align: :center, size: 10
-  end
-
-  private
-
-  def format_currency(value)
-    # Formats the number as currency and ensures it's positive, like in the frontend view.
-    "$#{format("%.2f", value.to_f.abs)}"
   end
 end

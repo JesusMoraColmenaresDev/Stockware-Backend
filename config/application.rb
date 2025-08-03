@@ -24,6 +24,10 @@ module Stockware
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Configura la zona horaria de la aplicación. Por tus logs, parece que estás en GMT-4.
+    # 'Caracas' es una opción común. Puedes ver todas las opciones con `bundle exec rake time:zones:local`.
+    #config.time_zone = "Caracas"
+
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.

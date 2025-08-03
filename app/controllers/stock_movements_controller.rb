@@ -3,7 +3,7 @@ class StockMovementsController < ApplicationController
   def index
     # 1. Empezamos con la consulta base, incluyendo productos y usuarios para poder filtrar y mostrar sus datos.
     # Usamos `includes` para evitar N+1 queries. `references` es necesario para el `where` en tablas asociadas.
-    movements = StockMovement.includes({ product: :category }, :user).references(:product).order(created_at: :desc)
+    movements = StockMovement.includes({ product: :category }, :user).references(:product, :user).order(created_at: :desc)
 
     # 2. Filtrar por término de búsqueda en el nombre del producto.
     if params[:search].present?
@@ -17,10 +17,19 @@ class StockMovementsController < ApplicationController
       movements = movements.where(products: { category_id: params[:category_id] })
     end
 
-    if params[:start_date].present?
+    # 4. Filtrar por término de búsqueda en el nombre del usuario.
+    if params[:user_search].present?
+      user_search_term = "%#{params[:user_search]}%"
+      movements = movements.where("users.name ILIKE ?", user_search_term)
+    end
+
+    start_date_param = params[:start_date]
+    end_date_param = params[:end_date]
+
+    if start_date_param.present?
       begin
         # Parseamos la fecha y nos aseguramos de que sea el inicio del día.
-        start_date = Date.parse(params[:start_date]).beginning_of_day
+        start_date = Date.parse(start_date_param).beginning_of_day
         movements = movements.where("stock_movements.created_at >= ?", start_date)
       rescue Date::Error
         render json: { error: "Formato de fecha de inicio inválido. Use YYYY-MM-DD." }, status: :bad_request
@@ -28,10 +37,10 @@ class StockMovementsController < ApplicationController
       end
     end
 
-    if params[:end_date].present?
+    if end_date_param.present?
       begin
         # Parseamos la fecha y la llevamos al final del día para que la búsqueda sea inclusiva.
-        end_date = Date.parse(params[:end_date]).end_of_day
+        end_date = Date.parse(end_date_param).end_of_day
         movements = movements.where("stock_movements.created_at <= ?", end_date)
       rescue Date::Error
         render json: { error: "Formato de fecha de inicio inválido. Use YYYY-MM-DD." }, status: :bad_request
@@ -54,7 +63,12 @@ class StockMovementsController < ApplicationController
       end
 
       format.pdf do
-        pdf = StockReportPdf.new(movements)
+        pdf = StockReportPdf.new(
+          movements,
+          current_user,
+          start_date: start_date_param,
+          end_date: end_date_param
+        )
         send_data pdf.render,
                   type: "application/pdf",
                   disposition: "inline" # 'inline' lo muestra en el navegador, 'attachment' lo descarga
