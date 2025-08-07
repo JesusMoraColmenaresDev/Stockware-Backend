@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users (Get ALL)
   def index
     # 1. Empezamos con la consulta base de todos los usuarios, seleccionando los campos necesarios.
-    users = User.select(:id, :email, :name, :created_at, :role, :is_enabled).order(:name)
+    users = User.where(is_enabled: true).select(:id, :email, :name, :created_at, :role, :is_enabled).order(:name)
 
     # 2. Si el parámetro 'search' está presente, filtramos por nombre o email.
     if params[:search].present?
