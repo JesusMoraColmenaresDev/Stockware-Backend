@@ -30,6 +30,22 @@ class UsersController < ApplicationController
     render json: @user.slice(:id, :email, :name, :created_at, :role, :is_enabled), status: :ok  # Del usuario especifico, nos taremos solo lo publico
   end
 
+  # GET /users/count
+  def count
+    # 1. Get counts of enabled users, grouped by role, in a single query.
+    # This results in a hash like: { "admin" => 5, "user" => 10 }
+    role_counts = User.where(is_enabled: true).group(:role).count
+
+    # 2. Extract specific counts, defaulting to 0 if a role has no users.
+    admin_count = role_counts["admin"] || 0
+    user_count = role_counts["user"] || 0
+
+    # 3. Calculate the total. Using .sum is robust for any number of roles.
+    total_count = role_counts.values.sum
+
+    render json: { total_count: total_count, admin_count: admin_count, user_count: user_count }, status: :ok
+  end
+
   # PATCH /users/:id
   # body: { user: { name: "New Name", email: "new@example.com" } }
   def update
