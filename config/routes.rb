@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [ :index, :show, :update ], defaults: { format: :json } do # GetAll, Get, Update/Patch
     get "all", on: :collection
+    get "count", to: "users#count", on: :collection
   end
 
   post "backup", to: "backups#create", defaults: { format: :json }

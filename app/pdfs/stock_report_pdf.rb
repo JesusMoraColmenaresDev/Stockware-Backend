@@ -1,4 +1,4 @@
-require_relative 'base_report_pdf'
+require_relative "base_report_pdf"
 
 class StockReportPdf < BaseReportPdf
   def initialize(movements, user, start_date: nil, end_date: nil)
@@ -15,7 +15,10 @@ class StockReportPdf < BaseReportPdf
       title: "Stock Movement Report",
       start_date: @start_date,
       end_date: @end_date
-    ) { table_content }
+    ) do
+        table_content
+        move_down 20
+      end
     # 2. Llama al `render` original de Prawn para generar el PDF.
     super
   end
