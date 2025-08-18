@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "auth/validate"
   # get "categories/index"
   # get "categories/show"
   # get "categories/create"
@@ -23,6 +24,7 @@ Rails.application.routes.draw do
   end
 
   # Ruta para que el usuario autenticado obtenga su propia información de perfil
+  get "/auth/validate", to: "auth#validate", defaults: { format: :json } # Ruta para validar el token JWT
   get "/profile", to: "users#profile", defaults: { format: :json }
   patch "/profile", to: "users#update_profile", defaults: { format: :json }
   patch "/password", to: "users#update_password", defaults: { format: :json }

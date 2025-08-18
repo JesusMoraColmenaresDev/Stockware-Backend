@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # before_action :authenticate_user!            # require JWT
-  # before_action :authorize_user!, only: [ :show, :update ]
+  before_action :authorize_user!, only: [ :show, :update ]
   before_action :set_user, only: [ :show, :update ]
 
   # GET /users (Get ALL)
